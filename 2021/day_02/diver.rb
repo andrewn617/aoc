@@ -1,14 +1,20 @@
 class Diver
-  attr_reader :input, :depth, :horizontal
+  attr_reader :input, :depth, :horizontal, :aim
 
-  def initialize(input)
+  def initialize(input, type: :no_aim)
     @input = input
     @depth = 0
     @horizontal = 0
+    @aim = 0
+    extend CommandInterpreters[type]
   end
 
-  def dive
+  def execute_dive
     commands.each(&method(:execute))
+  end
+
+  def position
+    depth * horizontal
   end
 
   private
@@ -21,18 +27,6 @@ class Diver
 
   def execute(command)
     send(command.direction, command.unit)
-  end
-
-  def forward(unit)
-    @horizontal += unit
-  end
-
-  def down(unit)
-    @depth += unit
-  end
-
-  def up(unit)
-    @depth -= unit
   end
 end
 
@@ -58,4 +52,44 @@ class Command
   end
 
   DirectionError = Class.new
+end
+
+module CommandInterpreters
+  module NoAimInterpreter
+    def forward(unit)
+      @horizontal += unit
+    end
+
+    def down(unit)
+      @depth += unit
+    end
+
+    def up(unit)
+      @depth -= unit
+    end
+  end
+
+  module WithAimInterpreter
+    def forward(unit)
+      @horizontal += unit
+      @depth += aim * unit
+    end
+
+    def down(unit)
+      @aim += unit
+    end
+
+    def up(unit)
+      @aim -= unit
+    end
+  end
+
+  DIRECTORY = {
+    no_aim: NoAimInterpreter,
+    with_aim: WithAimInterpreter
+  }
+
+  def self.[](type)
+    DIRECTORY[type]
+  end
 end
