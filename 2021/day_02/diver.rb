@@ -27,7 +27,7 @@ class Diver
   end
 
   def execute(command)
-    move = interpreter.send(command.direction, command.unit)
+    move = interpreter.interpret(command)
 
     @depth += move.depth
     @horizontal += move.horizontal
@@ -58,7 +58,15 @@ class Command
   DirectionError = Class.new
 end
 
+module InterpretsCommands
+  def interpret(command)
+    send(command.direction, command.unit)
+  end
+end
+
 class NoAimInterpreter
+  include InterpretsCommands
+
   def forward(unit)
     MoveFactory.build(horizontal: unit)
   end
@@ -73,6 +81,8 @@ class NoAimInterpreter
 end
 
 class WithAimInterpreter
+  include InterpretsCommands
+
   def initialize
     @aim = 0
   end
