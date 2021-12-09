@@ -12,4 +12,25 @@ RSpec.describe BinaryDiagnostic do
   it "calculates the life support rating" do
     expect(diagnostic.life_support_rating).to eq(1662846)
   end
+
+  it "calculates the life support rating easier" do
+    input = <<~TXT
+      00100
+      11110
+      10110
+      10111
+      10101
+      01111
+      00111
+      11100
+      10000
+      11001
+      00010
+      01010
+    TXT
+
+    diagnostic = BinaryDiagnostic.new(input)
+
+    expect(diagnostic.life_support_rating).to eq(230)
+  end
 end
