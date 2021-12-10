@@ -7,7 +7,7 @@ class Diver
     @input = input
     @depth = 0
     @horizontal = 0
-    @interpreter = CommandInterpreterFactory.build(type)
+    @interpreter = CommandInterpreters[type]
   end
 
   def execute_dive
@@ -136,13 +136,13 @@ class NoOpMove
   end
 end
 
-module CommandInterpreterFactory
+module CommandInterpreters
   DIRECTORY = {
     no_aim: NoAimInterpreter,
     with_aim: WithAimInterpreter
   }
 
-  def self.build(type)
+  def self.[](type)
     DIRECTORY[type].new
   end
 end
