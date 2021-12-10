@@ -8,6 +8,12 @@ RSpec.describe Bingo do
   it "finds the winners score" do
     bingo.score!
 
-    expect(bingo.winners.first.score).to eq(39984)
+    expect(bingo.winning_score).to eq(39984)
+  end
+
+  it "finds the winners score" do
+    bingo.score!
+
+    expect(bingo.winners.last.score).to eq(8468)
   end
 end

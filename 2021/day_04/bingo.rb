@@ -17,24 +17,15 @@ class Bingo
   def score!
     draws.each do |draw|
       boards.each { |board| board.mark_draw!(draw) }
-
-      if winner?
-        @winning_draw = draw
-        break if winner?
-      end
     end
   end
 
-  def score
-    winner.score
+  def winning_score
+    winners.first.score
   end
 
   def winners
     boards.select(&:won?).sort
-  end
-
-  def winner?
-    boards.any?(&:won?)
   end
 end
 
@@ -55,11 +46,14 @@ class Board
   end
 
   def <=>(other)
-    draws.size == other.draws.size
+    draws.size <=> other.draws.size
   end
 
   def mark_draw!(draw)
+    return if won?
+
     draws << draw
+
     y, x = find_index(draw)
 
     return if y.nil?
