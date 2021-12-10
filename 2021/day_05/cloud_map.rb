@@ -39,20 +39,22 @@ class CloudMap
 
   def diagonal_lines
     diagonal_pairs.map do |cord_pair|
-      cord_pair.inject(:zip).map(&method(:points_between)).inject(:zip)
+      cord_pair.inject(:zip).map(&method(:numbers_between)).inject(:zip)
     end
   end
 
   def straight_lines
     straight_pairs.map do |cord_pair|
-      cord_pair.inject(:zip).map(&method(:points_between)).inject(:product)
+      cord_pair.inject(:zip).map(&method(:numbers_between)).inject(:product)
     end
   end
 
-  def points_between(points)
-    direction = points.first < points.last ? :upto : :downto
+  def numbers_between(ordered_pair)
+    first, last = ordered_pair
 
-    points.first.send(direction, points.last).to_a
+    direction = first < last ? :upto : :downto
+
+    first.send(direction, last).to_a
   end
 
   def diagonal_pairs
