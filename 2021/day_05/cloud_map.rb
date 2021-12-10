@@ -39,13 +39,13 @@ class CloudMap
 
   def diagonal_lines
     diagonal_pairs.map do |cord_pair|
-      cord_pair.inject(:zip).map(&method(:numbers_between)).inject(:zip)
+      cord_pair.transpose.map(&method(:numbers_between)).transpose
     end
   end
 
   def straight_lines
     straight_pairs.map do |cord_pair|
-      cord_pair.inject(:zip).map(&method(:numbers_between)).inject(:product)
+      cord_pair.transpose.map(&method(:numbers_between)).inject(:product)
     end
   end
 
