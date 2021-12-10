@@ -26,22 +26,20 @@ class Bingo
   end
 
   def score
-    winner.score * @winning_draw
+    winner.score
   end
 
-  private
+  def winners
+    boards.select(&:won?).sort
+  end
 
   def winner?
     boards.any?(&:won?)
   end
-
-  def winner
-    boards.detect(&:won?)
-  end
 end
 
 class Board
-  attr_reader :layout
+  attr_reader :layout, :draws
 
   def self.new_from_string(string)
     layout = string.split("\n").map do |row|
@@ -53,9 +51,15 @@ class Board
 
   def initialize(layout)
     @layout = layout
+    @draws = []
+  end
+
+  def <=>(other)
+    draws.size == other.draws.size
   end
 
   def mark_draw!(draw)
+    draws << draw
     y, x = find_index(draw)
 
     return if y.nil?
@@ -71,7 +75,7 @@ class Board
   def score
     return 0 unless won?
 
-    layout.flatten.compact.sum
+    layout.flatten.compact.sum * draws.last
   end
 
   private
