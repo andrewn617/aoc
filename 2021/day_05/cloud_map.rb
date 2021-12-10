@@ -38,8 +38,8 @@ class CloudMap
   end
 
   def diagonal_lines
-    diagonal_pairs.map do |start, finish|
-      [[start.first, finish.first], [start.last, finish.last]].map do |start_cord, finish_cord|
+    diagonal_pairs.map do |cord_pair|
+      cord_pair.inject(:zip).map do |start_cord, finish_cord|
         direction = start_cord < finish_cord ? :upto : :downto
 
         start_cord.send(direction, finish_cord).to_a
@@ -48,8 +48,12 @@ class CloudMap
   end
 
   def straight_lines
-    straight_pairs.map do |start, finish|
-      [start.first, finish.first].sort.inject(:upto).to_a.product([start.last, finish.last].sort.inject(:upto).to_a)
+    straight_pairs.map do |cord_pair|
+      cord_pair.inject(:zip).map do |start_cord, finish_cord|
+        direction = start_cord < finish_cord ? :upto : :downto
+
+        start_cord.send(direction, finish_cord).to_a
+      end.inject(:product)
     end
   end
 
